@@ -1,5 +1,6 @@
 #pragma once
 
+////TODO: 이것들의 원리를 찾아서..
 template <typename T>
 struct is_shared_ptr
 {

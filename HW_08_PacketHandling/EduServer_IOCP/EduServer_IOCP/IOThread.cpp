@@ -159,5 +159,6 @@ void IOThread::DoSendJob()
 
 void IOThread::DoTimerJob()
 {
+	// Timer thread를 따로 안두고, 여기서 처리하네?
 	LTimer->DoTimerJob();
 }

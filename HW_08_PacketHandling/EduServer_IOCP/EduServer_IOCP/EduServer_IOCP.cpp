@@ -26,7 +26,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	GMemoryPool = new MemoryPool;
 	GClientSessionManager = new ClientSessionManager;
 	GIocpManager = new IocpManager;
-	GGrandCentralExecuter = new GrandCentralExecuter;
+	GGrandCentralExecuter = new GrandCentralExecuter; // 이걸 하나만 두는건가? Actor별로 1개를 두어야..처음에 Task 넣은 thread가 순서 보장하면서 다 처리하도록 -> 그러면 concurrnet queue일 이유도 없어지나? 그건 아닌데.. 어쩌지? 여러 thread가 Task를 넣을 순 있으니.. 
+	// 넣을 때, index부터 증가시키고 넣으면?
 	GDatabaseManager = new DBManager;
 	LLockOrderChecker = new LockOrderChecker(-1); ///< main thread도 락순서 체크
 	

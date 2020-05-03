@@ -4,6 +4,8 @@
 #include "Exception.h"
 #include "ThreadLocal.h"
 
+////TODO: 로그쪽을 좀 보아야
+
 class ThreadCallHistory
 {
 public:

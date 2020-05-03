@@ -47,6 +47,7 @@ void Player::ResponseLoad(int pid, float x, float y, float z, bool valid, wchar_
 	//TODO: 아래는 나중에 로그로...
 	wprintf_s(L"PID[%d], X[%f] Y[%f] Z[%f] NAME[%s] COMMENT[%s]\n", mPlayerId, mPosX, mPosY, mPosZ, mPlayerName, mComment);
 	
+	// 결과 패킷을 만들어서
 	MyPacket::LoginResult loginResult;
 	loginResult.set_playerid(mPlayerId);
 	loginResult.set_playername("TEST_LogonSuccess");
@@ -56,6 +57,7 @@ void Player::ResponseLoad(int pid, float x, float y, float z, bool valid, wchar_
 	pos->set_y(mPosY);
 	pos->set_z(mPosZ);
 
+	// SC : Server to Client 아닐까?
 	mSession->SendRequest(MyPacket::PKT_SC_LOGIN, loginResult);
 
 	DoSyncAfter(HEART_BEAT, &Player::OnTick);

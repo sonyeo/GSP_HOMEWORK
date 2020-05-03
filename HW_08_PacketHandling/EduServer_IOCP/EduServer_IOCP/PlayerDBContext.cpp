@@ -101,6 +101,11 @@ bool LoadPlayerDataContext::OnSQLExecute()
 void LoadPlayerDataContext::OnSuccess()
 {
 	//mSessionObject->mPlayer->ResponseLoad(mPlayerId, mPosX, mPosY, mPosZ, mIsValid, mPlayerName, mComment);
+	
+	// 이게 IO thread에서 도는데,
+	// 여러 IO thread가 mPlayer에 접근하면 안되고, 락을 걸어야 하므로(+ 순서보장도 되어야 하고)
+	// 직접 호출하지 않고,
+	// 큐를 써서 작업을 넣어놓고, 순서대로 처리함
 	mSessionObject->mPlayer->DoSync(&Player::ResponseLoad, mPlayerId, mPosX, mPosY, mPosZ, mIsValid, mPlayerName, mComment);
 }
 
@@ -136,7 +141,6 @@ bool UpdatePlayerPositionContext::OnSQLExecute()
 void UpdatePlayerPositionContext::OnSuccess()
 {
 	//mSessionObject->mPlayer->ResponseUpdatePosition(mPosX, mPosY, mPosZ);
-	////TODO: DoSync라는걸로 하는데 이게 뭐지?
 	mSessionObject->mPlayer->DoSync(&Player::RequestUpdatePosition, mPosX, mPosY, mPosZ);
 }
 

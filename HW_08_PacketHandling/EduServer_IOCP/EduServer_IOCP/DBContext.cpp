@@ -7,6 +7,7 @@
 
 DatabaseJobContext::DatabaseJobContext(ClientSession* owner) : mSessionObject(owner), mSuccess(false)
 {
+	////TODO: 이건 왜 해줘야 하는거지?
 	mSessionObject->AddRef();
 }
 

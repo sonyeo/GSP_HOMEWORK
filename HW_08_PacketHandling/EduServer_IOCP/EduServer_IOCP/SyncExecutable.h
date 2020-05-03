@@ -11,6 +11,9 @@ public:
 	{}
 	virtual ~SyncExecutable() {}
 
+	// 바로 호출안하고, 이렇게 넘기는 이유가..
+	// 여튼
+	// R을 리턴하는 T클래스의 멤버함수에 Args를 인자로 넣어서 호출
 	template <class R, class T, class... Args>
 	R DoSync(R (T::*memfunc)(Args...), Args... args)
 	{
@@ -18,6 +21,7 @@ public:
 		return (static_cast<T*>(this)->*memfunc)(args...);
 	}
 
+	// 특정 시간 뒤에 함수를 호출하도록(함수는 bind해서 보관)
 	template <class T, class... Args>
 	void DoSyncAfter(uint32_t after, void (T::*memfunc)(Args...), Args&&... args)
 	{
