@@ -38,6 +38,7 @@ void DBThread::DoDatabaseJob()
 		return;
 	}
 
+	// context로 넘어온 정보를 가지고 실행 후, 결과를 다시 Post하는데, 이때에는 IO쪽에 Post 하겠지
 	DatabaseJobContext* dbContext = reinterpret_cast<DatabaseJobContext*>(overlapped);
 	dbContext->mSuccess = dbContext->SQLExecute();
 	GIocpManager->PostDatabaseResult(dbContext);

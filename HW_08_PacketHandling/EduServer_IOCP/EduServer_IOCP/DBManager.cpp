@@ -86,6 +86,10 @@ unsigned int WINAPI DBManager::DbWorkerThread(LPVOID lpParam)
 
 void DBManager::PostDatabsaseRequest(DatabaseJobContext* dbContext)
 {
+	// 이게 답이군!
+	// Context에 담아서, DB용 IOCP에 Post를 해줌
+	////TODO: LOVERLAPPED가 아닌데도 이렇게 캐스팅하네..
+	// 여튼 그러면, DB thread 들이 이걸 받아서 처리하겠지
 	if (FALSE == PostQueuedCompletionStatus(mDbCompletionPort, 0, (ULONG_PTR)CK_DB_REQUEST, (LPOVERLAPPED)dbContext))
 	{
 		printf_s("DBManager::PostDatabsaseRequest PostQueuedCompletionStatus Error: %d\n", GetLastError());

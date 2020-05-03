@@ -136,6 +136,7 @@ bool UpdatePlayerPositionContext::OnSQLExecute()
 void UpdatePlayerPositionContext::OnSuccess()
 {
 	//mSessionObject->mPlayer->ResponseUpdatePosition(mPosX, mPosY, mPosZ);
+	////TODO: DoSync라는걸로 하는데 이게 뭐지?
 	mSessionObject->mPlayer->DoSync(&Player::RequestUpdatePosition, mPosX, mPosY, mPosZ);
 }
 
