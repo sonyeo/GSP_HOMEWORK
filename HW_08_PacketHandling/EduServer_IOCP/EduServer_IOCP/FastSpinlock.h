@@ -2,11 +2,11 @@
 
 enum LockOrder
 {
-	LO_DONT_CARE = 0,
-	LO_FIRST_CLASS,
-	LO_BUSINESS_CLASS,
-	LO_ECONOMLY_CLASS,
-	LO_LUGGAGE_CLASS
+	LO_DONT_CARE = 0, // ±‚∫ª
+	LO_FIRST_CLASS, // ClientSession
+	LO_BUSINESS_CLASS, 
+	LO_ECONOMLY_CLASS, // SyncExecutable
+	LO_LUGGAGE_CLASS // Session¿« SendBufferLock
 };
 
 class LockOrderChecker;

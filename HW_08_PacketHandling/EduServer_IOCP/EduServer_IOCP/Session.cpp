@@ -208,16 +208,21 @@ void Session::RecvCompletion(DWORD transferred)
 
 	mRecvBuffer.Commit(transferred);
 
+	// 다 받았으면, protobuf 써서 읽는 함수 호출!
 	OnReceive(transferred);
 }
 
 
-
+// Session을 참조하는 곳이 없으면, 자동으로 OnRelease가 불리도록
+// Async한 요청들도 있는데, 정작 처리하려고 보니, 해당 객체가 없으면 안되니?
+// Accept시, DBContext 만들시(DB요청시), OverlappedIoContext 만들시(IO요청시)
 void Session::AddRef()
 {
 	CRASH_ASSERT(InterlockedIncrement(&mRefCount) > 0);
 }
 
+// Disconnect 되었다고 바로 Session을 지우진 않고, 비동기 IO들이 끝나야!
+// Disconnect시, DBContext 제거시, OverlappedIoContext 제거시
 void Session::ReleaseRef()
 {
 	long ret = InterlockedDecrement(&mRefCount);

@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+// 히스토리에 쌓인거 역순으로 출력(최근께 제일 위에 찍히도록)
+////TODO: 왜 i == 0 일때는 안쓰나?
+// 왜냐면, MAX_HISTORY 일때, MAX_HISTORY - 0 = out of range exception 날듯
+// 개수 - i 가 array 의 index가 되어야 하니, 개수에서 -1 뺀것부터, 그게 0이될때까지 찍어주면 됨
 void ThreadCallHistory::DumpOut(std::ostream& ost)
 {
 	uint64_t count = mCounter < MAX_HISTORY ? mCounter : MAX_HISTORY;

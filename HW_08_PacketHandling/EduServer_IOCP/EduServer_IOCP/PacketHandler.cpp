@@ -13,6 +13,7 @@
 
 typedef void(*HandlerFunc)(ClientSession* session, PacketHeader& pktBase, protobuf::io::CodedInputStream& payloadStream);
 
+// 패킷을 handle 할 수 있는 handler 테이블을 만든다.
 static HandlerFunc HandlerTable[MAX_PKT_TYPE];
 
 static void DefaultHandler(ClientSession* session, PacketHeader& pktBase, protobuf::io::CodedInputStream& payloadStream)
@@ -22,6 +23,7 @@ static void DefaultHandler(ClientSession* session, PacketHeader& pktBase, protob
 	printf_s("Default Handler...PKT ID: %d\n", pktBase.mType);
 }
 
+// 기본 핸들러들을 테이블에 등록
 struct InitializeHandlers
 {
 	InitializeHandlers()
@@ -31,6 +33,7 @@ struct InitializeHandlers
 	}
 } _init_handlers_;
 
+// 새로운 핸들러를 등록
 struct RegisterHandler
 {
 	RegisterHandler(int pktType, HandlerFunc handler)
@@ -39,11 +42,12 @@ struct RegisterHandler
 	}
 };
 
+// 이 아래에 이제 핸들러 정의를 쓰면 될듯!
 #define REGISTER_HANDLER(PKT_TYPE)	\
-	static void Handler_##PKT_TYPE(ClientSession* session, PacketHeader& pktBase, protobuf::io::CodedInputStream& payloadStream); \
-	static RegisterHandler _register_##PKT_TYPE(PKT_TYPE, Handler_##PKT_TYPE); \
+	static void Handler_##PKT_TYPE(ClientSession* session, PacketHeader& pktBase, protobuf::io::CodedInputStream& payloadStream); \ // 전방선언
+	static RegisterHandler _register_##PKT_TYPE(PKT_TYPE, Handler_##PKT_TYPE); \ // 핸들러 등록
 	static void Handler_##PKT_TYPE(ClientSession* session, PacketHeader& pktBase, protobuf::io::CodedInputStream& payloadStream)
-
+		
 
 //@}
 
@@ -77,6 +81,7 @@ void ClientSession::OnReceive(size_t len)
 		protobuf::io::ArrayInputStream payloadArrayStream(payloadPos, packetheader.mSize);
 		protobuf::io::CodedInputStream payloadInputStream(&payloadArrayStream);
 
+		// session을 this로 넣어줌
 		/// packet dispatch...
 		HandlerTable[packetheader.mType](this, packetheader, payloadInputStream);
 	
@@ -91,6 +96,7 @@ void ClientSession::OnReceive(size_t len)
 
 using namespace MyPacket;
 
+// 이렇게 핸들러 등록해서 사용
 REGISTER_HANDLER(PKT_CS_LOGIN)
 {
 	LoginRequest loginRequest;
