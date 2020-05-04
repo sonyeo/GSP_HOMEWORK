@@ -33,6 +33,7 @@ public:
 	void	SetSocket(SOCKET sock) { mSocket = sock; }
 	SOCKET	GetSocket() const { return mSocket; }
 
+	// ¿Ã¡¶ æ»æ∏
 	void EchoBack();
 
 protected:

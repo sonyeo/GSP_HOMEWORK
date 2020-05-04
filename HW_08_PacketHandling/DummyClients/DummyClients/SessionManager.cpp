@@ -16,6 +16,8 @@ SessionManager::~SessionManager()
 	}
 }
 
+// Session을 미리 준비해놓고,
+// 동시에 ConnectEx를 진행
 bool SessionManager::PrepareClientSessions()
 {
 	CRASH_ASSERT(LThreadType == THREAD_MAIN);

@@ -113,6 +113,7 @@ void IocpManager::StopIoThreads()
 
 	for (int i = 0; i < mIoThreadCount; ++i)
 	{
+		// 끝내라는 신호를 IOCP로 모든 thread에 날림
 		if (FALSE == PostQueuedCompletionStatus(mCompletionPort, 0, (ULONG_PTR)CK_STOP_NOW, NULL))
 		{
 			printf_s("PostQueuedCompletionStatus Error: %d\n", GetLastError());

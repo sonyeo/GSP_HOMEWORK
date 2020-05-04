@@ -102,6 +102,8 @@ void IOThread::DoIocpJob()
 		break;
 
 	case IO_RECV_ZERO:
+		// 처음엔 PreRecv(Recv 0)로 누군가 Send하면 그걸 감지할 수 있도록 하고(미리 큰 버퍼를 가지고 기다리면 page locking!)
+		// Send한걸 이렇게 감지하면, 제대로 PostRecv()로 받음
 		completionOk = remote->PostRecv();
 		break;
 
@@ -116,6 +118,7 @@ void IOThread::DoIocpJob()
 		break;
 
 	case IO_RECV:
+		// 이 안에서, 패킷을 처리하는 로직이 동작
 		remote->RecvCompletion(dwTransferred);
 	
 		/// for test
@@ -144,6 +147,8 @@ void IOThread::DoIocpJob()
 
 void IOThread::DoSendJob()
 {
+	// 이거 IOCP 통해서 Send 요청한것들이 다 완료되어야 될텐데..
+	////TODO: 무한루프를 여기서 돌아도 되는것인가?
 	while (!LSendRequestSessionList->empty())
 	{
 		auto& session = LSendRequestSessionList->front();

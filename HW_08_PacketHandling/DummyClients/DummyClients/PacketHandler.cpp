@@ -54,6 +54,8 @@ void DummyClientSession::OnReceive(size_t len)
 
 	PacketHeader packetheader;
 
+	// 여러개의 패킷이 한번에 도착할 수 있음(모아서 보내므로)
+	// 여러개도 끊어서 하나씩 처리하도록 해놓음
 	while (codedInputStream.ReadRaw(&packetheader, HEADER_SIZE))
 	{
 		const void* payloadPos = nullptr;

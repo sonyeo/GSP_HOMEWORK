@@ -60,6 +60,8 @@ void Player::ResponseLoad(int pid, float x, float y, float z, bool valid, wchar_
 	// SC : Server to Client 아닐까?
 	mSession->SendRequest(MyPacket::PKT_SC_LOGIN, loginResult);
 
+	// 이건 주기적으로 발생하는 틱 이벤트
+	////TODO: 아직 쓰임새가 없어보임
 	DoSyncAfter(HEART_BEAT, &Player::OnTick);
 }
 
@@ -128,6 +130,7 @@ void Player::OnTick()
 // 	printf("tick: use count %d\n", GetThisPtr().use_count());
 // 	lock1.LeaveLock();
 
+	// 계속해서 한번씩 불림
 	DoSyncAfter(HEART_BEAT, &Player::OnTick);
 }
 

@@ -23,7 +23,7 @@ DWORD WorkerThread::Run()
 
 	while (true)
 	{
-		if ( false == DoIocpJob() )
+		if ( false == DoIocpJob() ) // 여기서 flase 리턴하면 loop 끝내도록
 			break;
 
 		DoSendJob(); ///< aggregated sends

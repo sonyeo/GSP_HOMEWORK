@@ -16,7 +16,7 @@ Session::Session(size_t sendBufSize, size_t recvBufSize)
 }
 
 
-
+// 서버에서 강제로 연결 종료를 시작하는 함수
 void Session::DisconnectRequest(DisconnectReason dr)
 {
 	TRACE_THIS;
@@ -144,11 +144,13 @@ bool Session::FlushSend()
 	{
 		/// 보낼 데이터도 없는 경우
 		if (0 == mSendPendingCount)
-			return true;
+			return true; // 보낼 데이터도 버퍼에 없고, Pending중인것도 없다. 깔끔하게 flush 되었음! true
 		
-		return false;
+		return false; // 보낼 데이터가 없는데, pending중인게 있으므로, 아직 깔끔하지 않다! false
 	}
 
+	// 이미 WSASend()요청은 했고, 그에 해당하는 IOCP callback이 호출되지 않았으므로,
+	// 기다린다. 아직 IOCP 완료안되고 pending된게 있으므로 false
 	/// 이전의 send가 완료 안된 경우
 	if (mSendPendingCount > 0)
 		return false;
@@ -162,6 +164,7 @@ bool Session::FlushSend()
 	sendContext->mWsaBuf.buf = mSendBuffer.GetBufferStart();
 
 	/// start async send
+	// send 버퍼를 거치지않고 바로 쓰도록 sendbytes를 0으로 세팅하고, 모든걸 그냥 바로 보내버림
 	if (SOCKET_ERROR == WSASend(mSocket, &sendContext->mWsaBuf, 1, &sendbytes, flags, (LPWSAOVERLAPPED)sendContext, NULL))
 	{
 		if (WSAGetLastError() != WSA_IO_PENDING)
@@ -175,8 +178,13 @@ bool Session::FlushSend()
 
 	}
 
+	// WSASend()는 바로 보낸게 아니라서, IOCP에서 진짜 보내졌다고 할때까진 pending 인가?
 	mSendPendingCount++;
 
+	// 무조건 1일수밖에 없을듯.. 위에서 >0 인경우는 걸렀으니
+	// 다른 Actor(Session)에게 Send()를 하는 경우로 인해 남이 나에게 Send거리를 넣어놓고,
+	// 다른 thread에서도 Flush를 하고 있는 경우?
+	// 다른 Actor가 Send까지 하면 안되고, 해당 Actor의 Executor에 넣어줘야..
 	return mSendPendingCount == 1;
 }
 
@@ -199,6 +207,9 @@ void Session::SendCompletion(DWORD transferred)
 
 	mSendBuffer.Remove(transferred);
 
+	////TODO: 이게 어떤 용도?
+	// 이건 Send를 한번에 flush하면서, WSASend()를 해주는데, 그렇게 해줬다고 해서 바로 Send된게 아님!
+	// IOCP를 통해서 여기까지 와야, 진짜로 보내진거라 pending을 줄여줌
 	mSendPendingCount--;
 }
 
@@ -234,6 +245,7 @@ void Session::ReleaseRef()
 	}
 }
 
+// 이제 안씀
 void Session::EchoBack()
 {
 	TRACE_THIS;

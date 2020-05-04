@@ -167,6 +167,8 @@ void ClientSession::OnRelease()
 }
 
 
+// 패킷을 보낼 때, 바로 보내지 않고, mSendBuffer에 쌓아놓고, LSendRequestSessionList 에 자기자신(Session)을 추가
+// 여러개 추가할일이 있나? 자기자신 말고? 없을거같은데..
 bool ClientSession::SendRequest(short packetType, const protobuf::MessageLite& payload)
 {
 	TRACE_THIS;
